@@ -1,0 +1,9 @@
+[project]
+name = "telegram-news-bot"
+version = "1.0.0"
+description = "Новости в Telegram: RSS/Atom парсер на stdlib + дедупликация + дайджест"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
