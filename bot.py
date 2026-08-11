@@ -8,6 +8,7 @@ aiosqlite (дедупликация новостей, подписки) + APSche
   /news [URL]       — свежие новости (по умолчанию Lenta.ru)
   /sources          — встроенные ленты (бесплатные, без ключа)
   /digest on|off    — ежедневный дайджест подписанных лент (в 9:00)
+  /mysubs           — на какие ленты включён дайджест
   /latest           — последние сохранённые новости из БД
   /stats            — сколько новостей уже обработано
 
@@ -77,6 +78,7 @@ async def cmd_start(message: Message) -> None:
         "/news https://…/rss.xml — своя RSS/Atom лента\n"
         "/sources — встроенные ленты\n"
         "/digest on — ежедневный дайджест (в 9:00)\n"
+        "/mysubs — мои подписки на дайджест\n"
         "/latest — последние сохранённые\n\n"
         f"Источник: <b>{'демо-данные' if fetcher.demo_mode else 'RSS/Atom-ленты'}</b>"
     )
@@ -131,6 +133,21 @@ async def cmd_digest(message: Message) -> None:
         f"📬 Дайджест <b>{'включён' if on else 'выключен'}</b> "
         f"(каждый день в {config.DIGEST_HOUR}:00, только новые новости)."
     )
+
+
+@router.message(Command("mysubs"))
+async def cmd_mysubs(message: Message) -> None:
+    """На какие ленты включён дайджест (подписки текущего пользователя)."""
+    subs = await db.user_subscriptions(message.from_user.id)
+    if not subs:
+        await message.answer("Вы не подписаны на дайджест. Включить: /digest on")
+        return
+    lines = [
+        f"• {_html.escape(s['feed_name'] or s['feed_url'], quote=False)} — "
+        f"<code>{_html.escape(s['feed_url'])}</code>"
+        for s in subs
+    ]
+    await message.answer("📬 <b>Ваши подписки на дайджест:</b>\n" + "\n".join(lines))
 
 
 @router.message(Command("latest"))
