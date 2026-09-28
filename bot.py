@@ -78,6 +78,7 @@ async def cmd_start(message: Message) -> None:
         "/news https://…/rss.xml — своя RSS/Atom лента\n"
         "/sources — встроенные ленты\n"
         "/digest on — ежедневный дайджест (в 9:00)\n"
+        "/digest on https://…/rss.xml — дайджест своей ленты\n"
         "/mysubs — мои подписки на дайджест\n"
         "/latest — последние сохранённые\n\n"
         f"Источник: <b>{'демо-данные' if fetcher.demo_mode else 'RSS/Atom-ленты'}</b>"
@@ -113,19 +114,22 @@ async def cmd_sources(message: Message) -> None:
 
 @router.message(Command("digest"))
 async def cmd_digest(message: Message) -> None:
-    args = message.text.split()
+    args = message.text.split(maxsplit=2)
     if len(args) < 2 or args[1].lower() not in ("on", "off"):
-        await message.answer("Использование: /digest on  или  /digest off")
+        await message.answer(
+            "Использование: /digest on  или  /digest off\n"
+            "/digest on https://…/rss.xml — дайджест по своей ленте"
+        )
         return
     on = args[1].lower() == "on"
-    feed_url = config.DEFAULT_FEED_URL
+    feed_url = args[2].strip() if len(args) > 2 else config.DEFAULT_FEED_URL
     if on:
-        ok = await db.subscribe(
-            message.from_user.id, feed_url,
-            feed_name=next(f["name"] for f in config.DEFAULT_FEEDS if f["url"] == feed_url),
+        feed_name = next(
+            (f["name"] for f in config.DEFAULT_FEEDS if f["url"] == feed_url), feed_url
         )
+        ok = await db.subscribe(message.from_user.id, feed_url, feed_name=feed_name)
         if not ok:
-            await message.answer("Вы уже подписаны на дайджест.")
+            await message.answer("Вы уже подписаны на дайджест этой ленты.")
             return
     else:
         await db.unsubscribe(message.from_user.id, feed_url)
