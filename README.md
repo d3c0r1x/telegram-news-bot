@@ -42,7 +42,7 @@ export NEWS_DEMO_MODE=1               # 0 — реальные ленты, тр�
 python bot.py
 ```
 
-На Windows — `run_bot9.cmd` (токен из корневого `.env`).
+На Windows — `start.bat` (токен из корневого `.env`).
 
 ## Структура проекта
 

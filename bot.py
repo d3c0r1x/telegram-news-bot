@@ -17,7 +17,7 @@ aiosqlite (дедупликация новостей, подписки) + APSche
   - дедупликация по UNIQUE(link) — одна новость никогда не придёт дважды;
   - TTL-кэш лент + retry с джиттером; middlewares: троттлинг и логирование.
 
-Запуск:  python bot.py   (задайте NEWS_BOT_TOKEN, или run_bot9.cmd).
+Запуск:  python bot.py   (задайте NEWS_BOT_TOKEN, или start.bat).
 """
 from __future__ import annotations
 
