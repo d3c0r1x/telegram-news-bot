@@ -1,5 +1,7 @@
 # Telegram News Bot
 
+[![CI](https://github.com/d3c0r1x/telegram-news-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/d3c0r1x/telegram-news-bot/actions/workflows/ci.yml)
+
 Новости в Telegram из RSS/Atom-лент. После подписки бот доставляет свежие материалы без дублирования уже просмотренных; раз в день отправляет дайджест из новых публикаций.
 
 Ключевой компонент — **парсер RSS/Atom на стандартной библиотеке** (`xml.etree`), без сторонних RSS-библиотек. Такой подход исключает дополнительные зависимости и обеспечивает полный контроль над поведением парсера.
